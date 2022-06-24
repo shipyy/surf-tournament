@@ -48,14 +48,14 @@ public Action DisplayHUD(Handle timer, any data)
                     FormatTimeFloat(i, g_fPlayers_BestRun[1], 3, szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
 
                     if(g_fPlayers_BestRun[0] != 0.0)
-                        Format(szPlayer1_final, 32, "%s\nBest Run: %s", szPlayer1_Current_Runtime, szPlayer1_Best_Runtime);
+                        Format(szPlayer1_final, 32, "%s\n\n%s\nBest Run: %s", g_sPlayer_Name[0], szPlayer1_Current_Runtime, szPlayer1_Best_Runtime);
                     else
-                        Format(szPlayer1_final, 32, "%s\n%s\nBest Run: N/A", g_sPlayer_Name[0], szPlayer1_Current_Runtime);
+                        Format(szPlayer1_final, 32, "%s\n\n%s\nBest Run: N/A", g_sPlayer_Name[0], szPlayer1_Current_Runtime);
                     
                     if(g_fPlayers_BestRun[1] != 0.0)
-                        Format(szPlayer2_final, 32, "%s\nBest Run: %s", szPlayer2_Current_Runtime, szPlayer2_Best_Runtime);
+                        Format(szPlayer2_final, 32, "%s\n\n%s\nBest Run: %s", g_sPlayer_Name[1], szPlayer2_Current_Runtime, szPlayer2_Best_Runtime);
                     else
-                        Format(szPlayer2_final, 32, "%s\n%s\nBest Run: N/A", g_sPlayer_Name[1], szPlayer2_Current_Runtime);
+                        Format(szPlayer2_final, 32, "%s\n\n%s\nBest Run: N/A", g_sPlayer_Name[1], szPlayer2_Current_Runtime);
 
                     int displayColor[2][3];
                     if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
@@ -70,7 +70,6 @@ public Action DisplayHUD(Handle timer, any data)
                         displayColor[0] = {255,255,0};
                         displayColor[1] = {255,255,0};
                     }
-
                     
                     //IF SPECCING PLAYER 1 FOCUS ON THE PLAYER 1 STATS
                     if(ObservedUser == g_iPlayers_Index[0]){
