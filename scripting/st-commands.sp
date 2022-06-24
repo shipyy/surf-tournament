@@ -11,8 +11,6 @@ public Action Client_Ready(int client, int args)
 
     //FIRST READY SLOT
     if(!g_bPlayers_Ready_Check[0]){
-        
-        g_bPlayersReady = true;
 
         g_bPlayers_Ready_Check[0] = true;
 
