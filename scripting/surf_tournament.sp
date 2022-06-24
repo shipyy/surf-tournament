@@ -132,8 +132,11 @@ public Action CountDown(Handle timer, any data)
 	if(g_CountDownDuration == 0){
 		if(DisplayHUD_Timer == INVALID_HANDLE){
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsValidClient(i) && IsPlayerAlive(i))
-					CPrintToChat(i, "%t", "GLHF", g_szChatPrefix);
+				if(IsValidClient(i) && IsPlayerAlive(i)){
+					//CPrintToChat(i, "%t", "GLHF", g_szChatPrefix);
+					SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+					ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
+				}
 
 			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 		}

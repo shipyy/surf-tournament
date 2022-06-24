@@ -78,7 +78,7 @@ public Action DisplayHUD(Handle timer, any data)
                         ShowHudText(i, -1, "%s", szPlayer1_final);
 
                         //PLAYER 2 INFO
-                        SetHudTextParams(0.15, -1.0, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(0.0, -1.0, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer2_final);
                     }
                     else if(ObservedUser == g_iPlayers_Index[1]){
@@ -87,7 +87,7 @@ public Action DisplayHUD(Handle timer, any data)
                         ShowHudText(i, -1, "%s", szPlayer2_final);
 
                         //PLAYER 2 INFO
-                        SetHudTextParams(0.15, -1.0, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(0.0, -1.0, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer1_final);
                         
                     }
