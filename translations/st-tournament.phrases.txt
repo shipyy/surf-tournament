@@ -15,4 +15,9 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{yellow}{1}{default} | {2} is Ready! {blue}(2/2 Players Ready)"
 	}
+	"GLHF"
+	{
+		"#format"	"{1:s}"
+		"en"		"-----  MATCH STARTED GL -----"
+	}
 }
