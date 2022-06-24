@@ -1,0 +1,18 @@
+"Phrases"
+{   
+    "CountDown"
+	{
+		"#format"	"{1:i}"
+		"en"		"----- {yellow}{1}{default} -----"
+	}
+    "Player1Ready"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{yellow}{1}{default} | {2} is Ready! {blue}(1/2 Players Ready)"
+	}
+    "Player2Ready"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{yellow}{1}{default} | {2} is Ready! {blue}(2/2 Players Ready)"
+	}
+}
