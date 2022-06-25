@@ -202,7 +202,7 @@ public Action MapFinished_Check(Handle timer, any data)
 
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsValidClient(i) && !IsFakeClient(i))
-				CPrintToChat(i, "%t",  "Player_inRun", g_szChatPrefix, g_sPlayer_Name[0])
+				CPrintToChat(i, "%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[0])
 	}
 	else if(surftimer_GetCurrentTime(g_iPlayers_Index[0]) <= 0.0){
 		g_bPlayer_Finished[0] = true;
@@ -215,7 +215,7 @@ public Action MapFinished_Check(Handle timer, any data)
 
 		for(int i = 1; i <= MaxClients; i++)
 			if(IsValidClient(i) && !IsFakeClient(i))
-				CPrintToChat(i, "%t",  "Player_inRun", g_szChatPrefix, g_sPlayer_Name[1])
+				CPrintToChat(i, "%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[1])
 	}
 	else if(surftimer_GetCurrentTime(g_iPlayers_Index[1]) <= 0.0){
 		g_bPlayer_Finished[1] = true;
