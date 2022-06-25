@@ -237,7 +237,7 @@ public Action MapFinished_Check(Handle timer, any data)
 	return Plugin_Continue;
 }
 
-public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total, int style){
+public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total){
 
 	if(!g_bMatchFinished)
 		if(client == g_iPlayers_Index[0])
