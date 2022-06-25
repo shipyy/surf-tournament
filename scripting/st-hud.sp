@@ -15,11 +15,11 @@ public Action DisplayHUD(Handle timer, any data)
             {
                 if(g_bMatchFinished){
                     if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
-                        SetHudTextParams(-1.0, -1.0, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[0], "WON THE MATCH");
                     }
                     else{
-                        SetHudTextParams(-1.0, -1.0, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[1], "WON THE MATCH");
                     }
                 }

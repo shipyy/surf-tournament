@@ -75,8 +75,13 @@ public void OnMapStart(){
 
 }
 
-public void OnMapEnd(){
+public void OnMapEnd()
+{
+	Timers();
+}
 
+public void Timers()
+{
 	if(PlayersReady_Timer != INVALID_HANDLE){
 		KillTimer(PlayersReady_Timer);
 		PlayersReady_Timer = INVALID_HANDLE;
@@ -106,7 +111,6 @@ public void OnMapEnd(){
 		KillTimer(Stopwatch_Timer);
 		Stopwatch_Timer = INVALID_HANDLE;
 	}
-
 }
 
 public void SetDefaults(){
@@ -194,7 +198,10 @@ public Action Match_StopWatch(Handle timer, any data)
 }
 
 public Action MapFinished_Check(Handle timer, any data)
-{
+{	
+	if(g_bMatchFinished)
+		Timers();
+
 	//PLAYER 1 STILL IN RUN
 	if(surftimer_GetCurrentTime(g_iPlayers_Index[0]) > 0.0 && !g_bPlayer_FinalRun[0]){
 
