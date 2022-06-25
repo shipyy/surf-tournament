@@ -1,23 +1,28 @@
 "Phrases"
-{   
-    "CountDown"
-	{
-		"#format"	"{1:i}"
-		"en"		"----- {yellow}{1}{default} -----"
-	}
+{
     "Player1Ready"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{yellow}{1}{default} | {2} is Ready! {blue}(1/2 Players Ready)"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} is Ready! {blue}(1/2 Players Ready)"
 	}
     "Player2Ready"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{yellow}{1}{default} | {2} is Ready! {blue}(2/2 Players Ready)"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} is Ready! {blue}(2/2 Players Ready)"
+	}
+	"CountDown"
+	{
+		"#format"	"{1:i}"
+		"en"		"----- {yellow}{1}{default} -----"
 	}
 	"GLHF"
 	{
 		"#format"	"{1:s}"
-		"en"		"-----  MATCH STARTED GL -----"
+		"en"		"-----  {yellow}MATCH STARTED GL{default} -----"
+	}
+	"GLHF"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} WON THE MATCH"
 	}
 }

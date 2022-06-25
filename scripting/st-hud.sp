@@ -24,6 +24,8 @@ public Action DisplayHUD(Handle timer, any data)
                         SetHudTextParams(-1.0, -1.0, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[1], "WON THE MATCH");
                     }
+
+                    CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
                 }
                 else{
                     char szFormattedTime[32];
