@@ -1,3 +1,4 @@
+//RETRIEVED FROM https://github.com/surftimer/SurfTimer/blob/master/addons/sourcemod/scripting/surftimer/misc.sp
 public void FormatTimeFloat(int client, float time, int type, char[] string, int length)
 {
 	char szMilli[16];

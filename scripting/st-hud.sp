@@ -5,8 +5,6 @@ public Action DisplayHUD(Handle timer, any data)
 		CountDown_Timer = INVALID_HANDLE;
 	}
 
-    g_RoundDuration = g_RoundDuration - 0.1;
-
     for(int i = 1; i <= MaxClients; i++)
     {
         if(IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i)){
@@ -15,7 +13,7 @@ public Action DisplayHUD(Handle timer, any data)
 
             if(!IsFakeClient(ObservedUser))
             {
-                if(g_RoundDuration < 0){
+                if(g_bMatchFinished){
                     if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
                         SetHudTextParams(-1.0, -1.0, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[0], "WON THE MATCH");
@@ -24,12 +22,13 @@ public Action DisplayHUD(Handle timer, any data)
                         SetHudTextParams(-1.0, -1.0, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[1], "WON THE MATCH");
                     }
-
-                    CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
                 }
                 else{
                     char szFormattedTime[32];
-                    FormatTimeFloat(i, g_RoundDuration, 3, szFormattedTime, sizeof(szFormattedTime));
+                    if(g_RoundDuration < 0)
+                        Format(szFormattedTime, sizeof(szFormattedTime), "%s", "Overtime");
+                    else
+                        FormatTimeFloat(i, g_RoundDuration, 3, szFormattedTime, sizeof(szFormattedTime));
 
                     //SHOW MATCH TIME LEFT
                     SetHudTextParams(-1.0, 0.15, 0.1, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);

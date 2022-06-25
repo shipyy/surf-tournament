@@ -25,4 +25,9 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{yellow}{1}{default} | {blue}{2}{default} WON THE MATCH"
 	}
+	"Player_inRun"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} is still in a run!"
+	}
 }
