@@ -30,4 +30,9 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{yellow}{1}{default} | {blue}{2}{default} is still in a run!"
 	}
+	"Player_AlreadyReady"
+	{
+		"#format"	"{1:s}"
+		"en"		"{yellow}{1}{default} | Already Ready!"
+	}
 }

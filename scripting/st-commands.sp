@@ -9,6 +9,11 @@ public Action Client_Ready(int client, int args)
     if(!IsValidClient(client))
         return Plugin_Handled;
 
+    if(g_bPlayersReady || g_iPlayers_Index[0] == client || g_iPlayers_Index[1] == client){
+        CPrintToChat(client, "%t", "Player_AlreadyReady");
+        return Plugin_Handled;
+    }
+
     //FIRST READY SLOT
     if(!g_bPlayers_Ready_Check[0]){
 

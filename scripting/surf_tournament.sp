@@ -34,33 +34,26 @@ Handle MapFinished_Timer = INVALID_HANDLE;
 Handle Stopwatch_Timer = INVALID_HANDLE;
 
 /* ----- INCLUDES ----- */
-#include <surftimer>
+//#include <surftimer>
+#include "include/surftimer.inc" // USE THIS FOR TESTING
 #include <colorlib>
 #include <autoexecconfig>
 #include "st-commands.sp"
 #include "st-hud.sp"
 #include "st-misc.sp"
 
-public void OnPluginStart()
-{
+public void OnPluginStart(){
+
 	EngineVersion eGame = GetEngineVersion();
-	if(eGame != Engine_CSGO && eGame != Engine_CSS)
-		SetFailState("[Surf Timer][TDF] This plugin is for CSGO/CSS only.");
-
-	// reload language files
-	LoadTranslations("st-tournament.phrases");
-	
-	createCMDS();
-}
-
-public void OnMapStart(){
+	if(eGame != Engine_CSGO)
+		SetFailState("[Tournament] This plugin is for CSGO only.");
 
 	AutoExecConfig_SetCreateDirectory(true);
 	AutoExecConfig_SetCreateFile(true);
 	AutoExecConfig_SetFile("tournament");
 
-	g_cvarRoundDuration = AutoExecConfig_CreateConVar("round_duration", "10", "specifies value of rounds duration", 10, true, 0.0, true, 100.0);
-	g_cvarCountDownDuration = AutoExecConfig_CreateConVar("countdown_duration", "10", "specifies value of countdown duration", 10, true, 0.0, true, 100.0);
+	g_cvarRoundDuration = AutoExecConfig_CreateConVar("round_duration", "10", "specifies value of rounds duration", _, true, 0.0, true, 100.0);
+	g_cvarCountDownDuration = AutoExecConfig_CreateConVar("countdown_duration", "10", "specifies value of countdown duration", _, true, 0.0, true, 100.0);
 
 	g_CountDownDuration = g_cvarCountDownDuration.IntValue;
 	g_RoundDuration = g_cvarRoundDuration.IntValue * 60 * 1.0; // convert to minutes
@@ -68,11 +61,16 @@ public void OnMapStart(){
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();
 
+	LoadTranslations("st-tournament.phrases");
+}
+
+public void OnMapStart(){
 	SetDefaults();
+
+	createCMDS();
 
 	//TIMER TO REGISTER IF BOTH PLAYERS ARE READY
 	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-
 }
 
 public void OnMapEnd()
@@ -144,7 +142,8 @@ public void SetDefaults(){
 public Action CheckPlayersReady(Handle timer, any data)
 {
 	if (g_bPlayersReady && CountDown_Timer == INVALID_HANDLE){
-		ServerCommand("mp_roundtime %d;mp_timelimit 100;mp_restartgame %d;mp_freezetime 0;", g_cvarRoundDuration.IntValue, g_cvarCountDownDuration.IntValue + 1);
+		ServerCommand("sm_cvar mp_freezetime %d", g_cvarCountDownDuration.IntValue);
+		ServerCommand("mp_roundtime %d;mp_timelimit 100;mp_restartgame 1;", g_cvarRoundDuration.IntValue);
 		CountDown_Timer = CreateTimer(1.0, CountDown, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
 
@@ -161,19 +160,19 @@ public Action CountDown(Handle timer, any data)
 	if(g_CountDownDuration == 0){
 		if(Stopwatch_Timer == INVALID_HANDLE && DisplayHUD_Timer == INVALID_HANDLE){
 			for(int i = 1; i <= MaxClients; i++)
-				if(IsValidClient(i) && IsPlayerAlive(i)){
+				if(IsValidClient(i) && IsPlayerAlive(i) && !IsFakeClient(i)){
 					//CPrintToChat(i, "%t", "GLHF", g_szChatPrefix);
 					SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-					ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
+					//ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
 				}
 
 			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 		}
 	}
-	else{
+	else if(g_CountDownDuration <= g_cvarCountDownDuration.IntValue){
 		for(int i = 1; i <= MaxClients; i++)
-        	if(IsValidClient(i)){
+        	if(IsValidClient(i) && !IsFakeClient(i)){
 				//CPrintToChat(i, "%t", "CountDown", g_CountDownDuration);
 				SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
 				ShowHudText(i, -1, "----- %d -----", g_CountDownDuration);
@@ -181,7 +180,9 @@ public Action CountDown(Handle timer, any data)
 
 		g_CountDownDuration--;
 	}
-
+	else if(g_CountDownDuration == (g_cvarCountDownDuration.IntValue + 1))
+		g_CountDownDuration--;
+		
 	return Plugin_Continue;
 }
 
@@ -240,9 +241,9 @@ public Action MapFinished_Check(Handle timer, any data)
 public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total){
 
 	if(!g_bMatchFinished)
-		if(client == g_iPlayers_Index[0])
+		if(client == g_iPlayers_Index[0] && !g_bPlayer_Finished[0])
 			g_fPlayers_BestRun[0] = fRunTime;
-		else if(client == g_iPlayers_Index[1])
+		else if(client == g_iPlayers_Index[1] && !g_bPlayer_Finished[1])
 			g_fPlayers_BestRun[1] = fRunTime;
 
 	return Plugin_Continue;
