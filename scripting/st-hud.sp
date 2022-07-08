@@ -16,23 +16,30 @@ public Action DisplayHUD(Handle timer, any data)
                 if(g_bMatchFinished){
                     if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
                         SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[0], "WON THE MATCH");
+                        ShowHudText(i, -1, "%s %s", g_sPlayer_Name[0], "WON THE MATCH");
                     }
                     else{
                         SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s %s", g_sPlayers_SteamID[1], "WON THE MATCH");
+                        ShowHudText(i, -1, "%s %s", g_sPlayer_Name[1], "WON THE MATCH");
                     }
                 }
                 else{
                     char szFormattedTime[32];
-                    if(g_RoundDuration < 0)
-                        Format(szFormattedTime, sizeof(szFormattedTime), "%s", "Overtime");
-                    else
+                    if(g_RoundDuration < 0.0){
+                        FormatTimeFloat(i, g_RoundDuration * -1.0, 3, szFormattedTime, sizeof(szFormattedTime));
+                        Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
+
+                        //SHOW MATCH TIME LEFT
+                        SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                        ShowHudText(i, -1, "%s", szFormattedTime);
+                    }
+                    else{
                         FormatTimeFloat(i, g_RoundDuration, 3, szFormattedTime, sizeof(szFormattedTime));
 
-                    //SHOW MATCH TIME LEFT
-                    SetHudTextParams(-1.0, 0.15, 0.1, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
-                    ShowHudText(i, -1, "%s", szFormattedTime);
+                        //SHOW MATCH TIME LEFT
+                        SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        ShowHudText(i, -1, "%s", szFormattedTime);
+                    }
 
                     //DISPLAY PLAYERS INFO
                     char szPlayer1_Current_Runtime[32];
