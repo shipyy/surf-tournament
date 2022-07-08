@@ -34,8 +34,7 @@ Handle MapFinished_Timer = INVALID_HANDLE;
 Handle Stopwatch_Timer = INVALID_HANDLE;
 
 /* ----- INCLUDES ----- */
-//#include <surftimer>
-#include "include/surftimer.inc" // USE THIS FOR TESTING
+#include <surftimer>
 #include <colorlib>
 #include <autoexecconfig>
 #include "st-commands.sp"
