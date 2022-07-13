@@ -239,11 +239,31 @@ public Action MapFinished_Check(Handle timer, any data)
 
 public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total){
 
-	if(!g_bMatchFinished)
-		if(client == g_iPlayers_Index[0] && !g_bPlayer_Finished[0])
+	if(!g_bMatchFinished){
+		if(client == g_iPlayers_Index[0] && !g_bPlayer_Finished[0]){
 			g_fPlayers_BestRun[0] = fRunTime;
-		else if(client == g_iPlayers_Index[1] && !g_bPlayer_Finished[1])
+
+			char szPlayer1_Best_Runtime[32];
+			FormatTimeFloat(client, g_fPlayers_BestRun[0], 3, szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
+
+			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[0], szPlayer1_Best_Runtime);
+
+			if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1])
+				CPrintToChatAll("%s is now in the lead!", g_sPlayer_Name[0]);
+
+		}
+		else if(client == g_iPlayers_Index[1] && !g_bPlayer_Finished[1]){
 			g_fPlayers_BestRun[1] = fRunTime;
+
+			char szPlayer2_Best_Runtime[32];
+			FormatTimeFloat(client, g_fPlayers_BestRun[1], 3, szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
+
+			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[1], szPlayer2_Best_Runtime);
+
+			if(g_fPlayers_BestRun[1] > g_fPlayers_BestRun[0])
+				CPrintToChatAll("%s is now in the lead!", g_sPlayer_Name[1]);
+		}
+	}
 
 	return Plugin_Continue;
 }
