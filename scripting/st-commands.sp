@@ -41,6 +41,7 @@ public Action Client_Ready(int client, int args)
 
         CPrintToChatAll("%t", "Player2Ready", g_szChatPrefix, g_sPlayer_Name[1]);
 
+        g_bPlayersReady = true;
     }
 
     return Plugin_Handled;
