@@ -10,7 +10,7 @@ public Action Client_Ready(int client, int args)
         return Plugin_Handled;
 
     if(g_bPlayersReady || g_iPlayers_Index[0] == client || g_iPlayers_Index[1] == client){
-        CPrintToChat(client, "%t", "Player_AlreadyReady");
+        CPrintToChat(client, "%t", "Player_AlreadyReady", g_szChatPrefix);
         return Plugin_Handled;
     }
 
@@ -29,9 +29,9 @@ public Action Client_Ready(int client, int args)
     }
     //SECOND READY SLOT
     else{
-        g_bPlayersReady = true;
-
         g_bPlayers_Ready_Check[1] = true;
+
+        g_bPlayersReady = true;
 
         g_iPlayers_Index[1] = client;
 
