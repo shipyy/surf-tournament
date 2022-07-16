@@ -107,10 +107,16 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	// 00:00:00
 	if (type == 3)
 	{
+		imilli = RoundToZero(time * 1000);
+		imilli = imilli % 1000;
 		if (imilli < 10)
-			Format(szMilli, 16, "0%d", imilli);
+			Format(szMilli, 16, "00%dms", imilli);
 		else
-			Format(szMilli, 16, "%d", imilli);
+			if (imilli < 100)
+				Format(szMilli, 16, "0%dms", imilli);
+			else
+				Format(szMilli, 16, "%dms", imilli);
+
 		if (iseconds < 10)
 			Format(szSeconds, 16, "0%d", iseconds);
 		else

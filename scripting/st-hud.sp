@@ -46,6 +46,8 @@ public Action DisplayHUD(Handle timer, any data)
                     char szPlayer2_Current_Runtime[32];
                     char szPlayer1_Best_Runtime[32];
                     char szPlayer2_Best_Runtime[32];
+                    char szPlayer1_RunDifference[32];
+                    char szPlayer2_RunDifference[32];
                     char szPlayer1_final[128];
                     char szPlayer2_final[128];
 
@@ -55,15 +57,32 @@ public Action DisplayHUD(Handle timer, any data)
                     FormatTimeFloat(i, g_fPlayers_BestRun[0], 3, szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
                     FormatTimeFloat(i, g_fPlayers_BestRun[1], 3, szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
 
+                    FormatTimeFloat(i, g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1], 3, szPlayer1_RunDifference, sizeof(szPlayer1_RunDifference));
+                    FormatTimeFloat(i, g_fPlayers_BestRun[1] - g_fPlayers_BestRun[0], 3, szPlayer2_RunDifference, sizeof(szPlayer2_RunDifference));
+
+                    if(g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1] > 0){
+                        Format(szPlayer1_RunDifference, 32, "(+ %s)", szPlayer1_RunDifference);
+                        Format(szPlayer2_RunDifference, 32, "(- %s)", szPlayer2_RunDifference);
+                    }
+                    else if(g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1] < 0){
+                        Format(szPlayer1_RunDifference, 32, "(- %s)", szPlayer1_RunDifference);
+                        Format(szPlayer2_RunDifference, 32, "(+ %s)", szPlayer2_RunDifference);
+                    }
+                    else{
+                        Format(szPlayer1_RunDifference, 32, "(%s)", szPlayer1_RunDifference);
+                        Format(szPlayer2_RunDifference, 32, "(%s)", szPlayer2_RunDifference);
+                    }
+
+
                     if(g_fPlayers_BestRun[0] != 0.0)
-                        Format(szPlayer1_final, 32, "%s\n\n\n%s\nBest Run: %s", g_sPlayer_Name[0], szPlayer1_Current_Runtime, szPlayer1_Best_Runtime);
+                        Format(szPlayer1_final, 32, "%s\n%s\nBest Run: %s %s", g_sPlayer_Name[0], szPlayer1_Current_Runtime, szPlayer1_Best_Runtime, szPlayer1_RunDifference);
                     else
-                        Format(szPlayer1_final, 32, "%s\n\n\n%s\nBest Run: N/A", g_sPlayer_Name[0], szPlayer1_Current_Runtime);
+                        Format(szPlayer1_final, 32, "%s\n%s\nBest Run: N/A", g_sPlayer_Name[0], szPlayer1_Current_Runtime);
                     
                     if(g_fPlayers_BestRun[1] != 0.0)
-                        Format(szPlayer2_final, 32, "%s\n\n\n%s\nBest Run: %s", g_sPlayer_Name[1], szPlayer2_Current_Runtime, szPlayer2_Best_Runtime);
+                        Format(szPlayer2_final, 32, "%s\n%s\nBest Run: %s %s", g_sPlayer_Name[1], szPlayer2_Current_Runtime, szPlayer2_Best_Runtime, szPlayer2_RunDifference);
                     else
-                        Format(szPlayer2_final, 32, "%s\n\n\n%s\nBest Run: N/A", g_sPlayer_Name[1], szPlayer2_Current_Runtime);
+                        Format(szPlayer2_final, 32, "%s\n%s\nBest Run: N/A", g_sPlayer_Name[1], szPlayer2_Current_Runtime);
 
                     int displayColor[2][3];
                     if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
