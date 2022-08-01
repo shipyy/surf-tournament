@@ -1,14 +1,21 @@
-//RETRIEVED FROM https://github.com/surftimer/SurfTimer/blob/master/addons/sourcemod/scripting/surftimer/misc.sp
-public void FormatTimeFloat(int client, float time, int type, char[] string, int length)
+public void FormatTimeFloat(int client, float time, char[] string, int length)
 {
+	char szDays[16];
+	char szHours[16];
 	char szMinutes[16];
 	char szSeconds[16];
 	char szMS[16];
 
-	int minutes = view_as<int>(time / 60);
-	int seconds = view_as<int>(time - minutes*60);
-	int ms = view_as<int>((time - view_as<int>(time)) * 1000);
+	int time_rounded = RoundToZero(time);
 
+	int days = time_rounded / 86400;
+	int hours = (time_rounded - (days * 86400)) / 3600;
+	int minutes = (time_rounded - (days * 86400) - (hours * 3600)) / 60;
+	int seconds = (time_rounded - (days * 86400) - (hours * 3600) - (minutes * 60));
+	int ms = RoundToZero(FloatFraction(time) * 1000);
+
+	// 00:00:00:00:000
+	// 00:00:00:000
 	// 00:00:000
 
 	//MILISECONDS
@@ -31,8 +38,31 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		Format(szMinutes, 16, "0%d", minutes);
 	else
 		Format(szMinutes, 16, "%d", minutes);
-	
-	Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMS);
+
+	//HOURS
+	if (hours < 10)
+		Format(szHours, 16, "0%d", hours);
+	else
+		Format(szHours, 16, "%d", hours);
+
+	//DAYS
+	if (days < 10)
+		Format(szDays, 16, "0%d", days);
+	else
+		Format(szDays, 16, "%d", days);
+
+	if (days > 0) {
+		Format(string, length, "%s:%s:%s:%s.%s", szDays, szHours, szMinutes, szSeconds, szMS);
+	}
+	else {
+		if (hours > 0) {
+			Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMS);
+		}
+		else {
+			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMS);
+		}
+	}
+
 }
 
 stock bool IsValidClient(int client)

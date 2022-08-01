@@ -26,7 +26,7 @@ public Action DisplayHUD(Handle timer, any data)
                 else{
                     char szFormattedTime[32];
                     if(g_RoundDuration < 0.0){
-                        FormatTimeFloat(i, g_RoundDuration * -1.0, 3, szFormattedTime, sizeof(szFormattedTime));
+                        FormatTimeFloat(i, g_RoundDuration * -1.0, szFormattedTime, sizeof(szFormattedTime));
                         Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
                         //SHOW MATCH TIME LEFT
@@ -34,7 +34,7 @@ public Action DisplayHUD(Handle timer, any data)
                         ShowHudText(i, -1, "%s", szFormattedTime);
                     }
                     else{
-                        FormatTimeFloat(i, g_RoundDuration, 3, szFormattedTime, sizeof(szFormattedTime));
+                        FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
                         //SHOW MATCH TIME LEFT
                         SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
@@ -51,14 +51,14 @@ public Action DisplayHUD(Handle timer, any data)
                     char szPlayer1_final[128];
                     char szPlayer2_final[128];
 
-                    FormatTimeFloat(i, surftimer_GetCurrentTime(g_iPlayers_Index[0]), 3, szPlayer1_Current_Runtime, sizeof(szPlayer1_Current_Runtime));
-                    FormatTimeFloat(i, surftimer_GetCurrentTime(g_iPlayers_Index[1]), 3, szPlayer2_Current_Runtime, sizeof(szPlayer2_Current_Runtime));
+                    FormatTimeFloat(i, surftimer_GetCurrentTime(g_iPlayers_Index[0]), szPlayer1_Current_Runtime, sizeof(szPlayer1_Current_Runtime));
+                    FormatTimeFloat(i, surftimer_GetCurrentTime(g_iPlayers_Index[1]), szPlayer2_Current_Runtime, sizeof(szPlayer2_Current_Runtime));
 
-                    FormatTimeFloat(i, g_fPlayers_BestRun[0], 3, szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
-                    FormatTimeFloat(i, g_fPlayers_BestRun[1], 3, szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
+                    FormatTimeFloat(i, g_fPlayers_BestRun[0], szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
+                    FormatTimeFloat(i, g_fPlayers_BestRun[1], szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
 
-                    FormatTimeFloat(i, g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1], 3, szPlayer1_RunDifference, sizeof(szPlayer1_RunDifference));
-                    FormatTimeFloat(i, g_fPlayers_BestRun[1] - g_fPlayers_BestRun[0], 3, szPlayer2_RunDifference, sizeof(szPlayer2_RunDifference));
+                    FormatTimeFloat(i, g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1], szPlayer1_RunDifference, sizeof(szPlayer1_RunDifference));
+                    FormatTimeFloat(i, g_fPlayers_BestRun[1] - g_fPlayers_BestRun[0], szPlayer2_RunDifference, sizeof(szPlayer2_RunDifference));
 
                     if(g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1] > 0){
                         Format(szPlayer1_RunDifference, 32, "(+ %s)", szPlayer1_RunDifference);

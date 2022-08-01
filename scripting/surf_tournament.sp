@@ -244,7 +244,7 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 			g_fPlayers_BestRun[0] = fRunTime;
 
 			char szPlayer1_Best_Runtime[32];
-			FormatTimeFloat(client, g_fPlayers_BestRun[0], 3, szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
+			FormatTimeFloat(client, g_fPlayers_BestRun[0], szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
 
 			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[0], szPlayer1_Best_Runtime);
 
@@ -256,7 +256,7 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 			g_fPlayers_BestRun[1] = fRunTime;
 
 			char szPlayer2_Best_Runtime[32];
-			FormatTimeFloat(client, g_fPlayers_BestRun[1], 3, szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
+			FormatTimeFloat(client, g_fPlayers_BestRun[1], szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
 
 			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[1], szPlayer2_Best_Runtime);
 
