@@ -71,3 +71,41 @@ stock bool IsValidClient(int client)
         return true;
     return false;
 }
+
+public void DeleteTimers()
+{	
+	delete PlayersReady_Timer;
+	delete CountDown_Timer;
+	delete DisplayHUD_Timer;
+	delete Timeleft_Timer;
+	delete Stopwatch_Timer;
+	delete MapFinished_Timer;
+}
+
+public void SetDefaults(){
+
+	g_iPlayers_Index[0] = -1;
+	g_iPlayers_Index[1] = -1;
+
+	g_fPlayers_BestRun[0] = 0.0;
+	g_fPlayers_BestRun[1] = 0.0;
+
+	Format(g_sPlayers_SteamID[0], 32, "%s", "");
+	Format(g_sPlayers_SteamID[1], 32, "%s", "");
+
+	Format(g_sPlayer_Name[0], MAX_NAME_LENGTH, "%s", "");
+	Format(g_sPlayer_Name[1], MAX_NAME_LENGTH, "%s", "");
+
+	g_bPlayers_Ready_Check[0] = false;
+	g_bPlayers_Ready_Check[1] = false;
+
+	g_bPlayersReady = false;
+
+	g_bPlayer_FinalRun[0] = false;
+	g_bPlayer_FinalRun[1] = false;
+	
+	g_bPlayer_Finished[0] = false;
+	g_bPlayer_Finished[1] = false;
+
+	g_bMatchFinished = false;
+}

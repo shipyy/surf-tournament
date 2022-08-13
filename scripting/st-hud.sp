@@ -1,10 +1,5 @@
 public Action DisplayHUD(Handle timer, any data)
 {
-    if(CountDown_Timer != INVALID_HANDLE){
-		KillTimer(CountDown_Timer);
-		CountDown_Timer = INVALID_HANDLE;
-	}
-
     for(int i = 1; i <= MaxClients; i++)
     {
         if(IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i)){
@@ -161,4 +156,6 @@ public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[5
             }
         }
     }
+
+    return Plugin_Continue;
 }

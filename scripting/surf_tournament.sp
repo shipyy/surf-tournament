@@ -26,12 +26,12 @@ ConVar g_cvarCountDownDuration;
 int g_CountDownDuration;
 float g_RoundDuration;
 
-Handle PlayersReady_Timer = INVALID_HANDLE;
-Handle CountDown_Timer = INVALID_HANDLE;
-Handle DisplayHUD_Timer = INVALID_HANDLE;
-Handle Timeleft_Timer = INVALID_HANDLE;
-Handle MapFinished_Timer = INVALID_HANDLE;
-Handle Stopwatch_Timer = INVALID_HANDLE;
+Handle PlayersReady_Timer = null;
+Handle CountDown_Timer = null;
+Handle DisplayHUD_Timer = null;
+Handle Timeleft_Timer = null;
+Handle MapFinished_Timer = null;
+Handle Stopwatch_Timer = null;
 
 /* ----- INCLUDES ----- */
 #include <surftimer>
@@ -68,74 +68,11 @@ public void OnMapStart(){
 
 	createCMDS();
 
+	//reset timers
+	DeleteTimers();
+
 	//TIMER TO REGISTER IF BOTH PLAYERS ARE READY
-	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-}
-
-public void OnMapEnd()
-{
-	Timers();
-}
-
-public void Timers()
-{
-	if(PlayersReady_Timer != INVALID_HANDLE){
-		KillTimer(PlayersReady_Timer);
-		PlayersReady_Timer = INVALID_HANDLE;
-	}
-
-	if(CountDown_Timer != INVALID_HANDLE){
-		KillTimer(CountDown_Timer);
-		CountDown_Timer = INVALID_HANDLE;
-	}
-
-	if(DisplayHUD_Timer != INVALID_HANDLE){
-		KillTimer(DisplayHUD_Timer);
-		DisplayHUD_Timer = INVALID_HANDLE;
-	}
-
-	if(Timeleft_Timer != INVALID_HANDLE){
-		KillTimer(Timeleft_Timer);
-		Timeleft_Timer = INVALID_HANDLE;
-	}
-
-	if(MapFinished_Timer != INVALID_HANDLE){
-		KillTimer(MapFinished_Timer);
-		MapFinished_Timer = INVALID_HANDLE;
-	}
-
-	if(Stopwatch_Timer != INVALID_HANDLE){
-		KillTimer(Stopwatch_Timer);
-		Stopwatch_Timer = INVALID_HANDLE;
-	}
-}
-
-public void SetDefaults(){
-
-	g_iPlayers_Index[0] = -1;
-	g_iPlayers_Index[1] = -1;
-
-	g_fPlayers_BestRun[0] = 0.0;
-	g_fPlayers_BestRun[1] = 0.0;
-
-	Format(g_sPlayers_SteamID[0], 32, "%s", "");
-	Format(g_sPlayers_SteamID[1], 32, "%s", "");
-
-	Format(g_sPlayer_Name[0], MAX_NAME_LENGTH, "%s", "");
-	Format(g_sPlayer_Name[1], MAX_NAME_LENGTH, "%s", "");
-
-	g_bPlayers_Ready_Check[0] = false;
-	g_bPlayers_Ready_Check[1] = false;
-
-	g_bPlayersReady = false;
-
-	g_bPlayer_FinalRun[0] = false;
-	g_bPlayer_FinalRun[1] = false;
-	
-	g_bPlayer_Finished[0] = false;
-	g_bPlayer_Finished[1] = false;
-
-	g_bMatchFinished = false;
+	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
 }
 
 public Action CheckPlayersReady(Handle timer, any data)
@@ -143,7 +80,10 @@ public Action CheckPlayersReady(Handle timer, any data)
 	if (g_bPlayersReady && CountDown_Timer == INVALID_HANDLE){
 		ServerCommand("sm_cvar mp_freezetime %d", g_cvarCountDownDuration.IntValue);
 		ServerCommand("mp_roundtime %d;mp_timelimit 100;mp_restartgame 1;", g_cvarRoundDuration.IntValue);
-		CountDown_Timer = CreateTimer(1.0, CountDown, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+		CountDown_Timer = CreateTimer(1.0, CountDown, _, TIMER_REPEAT);
+
+		PlayersReady_Timer = null;
+		return Plugin_Stop;
 	}
 
 	return Plugin_Continue;
@@ -151,11 +91,6 @@ public Action CheckPlayersReady(Handle timer, any data)
 
 public Action CountDown(Handle timer, any data)
 {
-	if(PlayersReady_Timer != INVALID_HANDLE){
-		KillTimer(PlayersReady_Timer);
-		PlayersReady_Timer = INVALID_HANDLE;
-	}
-
 	if(g_CountDownDuration == 0){
 		if(Stopwatch_Timer == INVALID_HANDLE && DisplayHUD_Timer == INVALID_HANDLE){
 			for(int i = 1; i <= MaxClients; i++)
@@ -165,8 +100,11 @@ public Action CountDown(Handle timer, any data)
 					//ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
 				}
 
-			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_REPEAT);
+			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_REPEAT);
+
+			CountDown_Timer = null;
+			return Plugin_Stop;
 		}
 	}
 	else if(g_CountDownDuration <= g_cvarCountDownDuration.IntValue){
@@ -190,18 +128,14 @@ public Action Match_StopWatch(Handle timer, any data)
 	g_RoundDuration = g_RoundDuration - 0.1;
 	
 	if(g_RoundDuration <= 0.0 && MapFinished_Timer == INVALID_HANDLE){
-		MapFinished_Timer = CreateTimer(0.1, MapFinished_Check, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-		return Plugin_Handled;
+		MapFinished_Timer = CreateTimer(0.1, MapFinished_Check, _, TIMER_REPEAT);
 	}
 
 	return Plugin_Continue;
 }
 
 public Action MapFinished_Check(Handle timer, any data)
-{	
-	if(g_bMatchFinished)
-		Timers();
-
+{
 	//PLAYER 1 STILL IN RUN
 	if(surftimer_GetCurrentTime(g_iPlayers_Index[0]) > 0.0 && !g_bPlayer_FinalRun[0]){
 
@@ -232,6 +166,8 @@ public Action MapFinished_Check(Handle timer, any data)
 		g_bMatchFinished = true;
 
 		CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
+
+		DeleteTimers();
 	}
 
 	return Plugin_Continue;
@@ -265,6 +201,9 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 		}
 	}
 
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
+public void OnMapEnd(){
+	DeleteTimers();
+}
