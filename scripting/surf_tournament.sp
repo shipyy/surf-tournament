@@ -182,13 +182,14 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 
 			char szPlayer1_Best_Runtime[32];
 			FormatTimeFloat(client, g_fPlayers_BestRun[0], szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
-
-			float runtime_difference;
-			char szRuntime_Difference[32];
-			runtime_difference = fRunTime - g_fPlayers_BestRun[1];
-			FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
 			
 			if (g_fPlayers_BestRun[1] != 0.0 ) {
+				
+				float runtime_difference;
+				char szRuntime_Difference[32];
+				runtime_difference = fRunTime - g_fPlayers_BestRun[1];
+				FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+
 				if (runtime_difference < 0.0)
 					Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
 				else
@@ -211,13 +212,14 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 
 			char szPlayer2_Best_Runtime[32];
 			FormatTimeFloat(client, g_fPlayers_BestRun[1], szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
-
-			float runtime_difference;
-			char szRuntime_Difference[32];
-			runtime_difference = fRunTime - g_fPlayers_BestRun[0];
-			FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
 			
 			if (g_fPlayers_BestRun[0] != 0.0 ) {
+
+				float runtime_difference;
+				char szRuntime_Difference[32];
+				runtime_difference = fRunTime - g_fPlayers_BestRun[0];
+				FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+
 				if (runtime_difference < 0.0)
 					Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
 				else
