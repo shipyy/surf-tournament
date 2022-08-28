@@ -31,8 +31,6 @@ public Action Client_Ready(int client, int args)
     else{
         g_bPlayers_Ready_Check[1] = true;
 
-        g_bPlayersReady = true;
-
         g_iPlayers_Index[1] = client;
 
         GetClientAuthId(client, AuthId_Steam2, g_sPlayers_SteamID[1], sizeof(g_sPlayers_SteamID), true);

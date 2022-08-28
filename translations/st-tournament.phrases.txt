@@ -17,22 +17,36 @@
 	}
 	"GLHF"
 	{
-		"#format"	"{1:s}"
 		"en"		"-----  {yellow}MATCH STARTED GL{default} -----"
 	}
 	"Winner"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"{yellow}{1}{default} | {blue}{2}{default} WON THE MATCH"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} WON THE MATCH!"
 	}
 	"Player_inRun"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"{yellow}{1}{default} | {blue}{2}{default} is still in a run!"
 	}
+	"Player_Finished"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{yellow}{1}{default} | {blue}{2}{default} has finished! No more attempts!"
+	}
 	"Player_AlreadyReady"
 	{
 		"#format"	"{1:s}"
 		"en"		"{yellow}{1}{default} | Already Ready!"
+	}
+	"Run_Finished_Faster"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({green}{3}{default})!"
+	}
+	"Run_Finished_Slower"
+	{
+		"#format"	"{1:s},{2:s},{3:s}"
+		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({red}{3}{default})!"
 	}
 }

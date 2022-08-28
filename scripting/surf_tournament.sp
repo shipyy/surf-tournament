@@ -12,6 +12,9 @@ int g_iPlayers_Index[2];
 char g_sPlayers_SteamID[2][32];
 char g_sPlayer_Name[2][MAX_NAME_LENGTH];
 float g_fPlayers_BestRun[2];
+float g_fPlayers_BestRun_CheckpointTimes[2][42];
+float g_fPlayers_CurrentRun_CheckpointTimes[2][42];
+int	g_iCurrentCP[2];
 bool g_bPlayers_Ready_Check[2];
 bool g_bPlayersReady;
 
@@ -28,7 +31,6 @@ float g_RoundDuration;
 
 Handle PlayersReady_Timer = null;
 Handle CountDown_Timer = null;
-Handle DisplayHUD_Timer = null;
 Handle Timeleft_Timer = null;
 Handle MapFinished_Timer = null;
 Handle Stopwatch_Timer = null;
@@ -41,8 +43,8 @@ Handle Stopwatch_Timer = null;
 #include "st-hud.sp"
 #include "st-misc.sp"
 
-public void OnPluginStart(){
-
+public void OnPluginStart()
+{
 	EngineVersion eGame = GetEngineVersion();
 	if(eGame != Engine_CSGO)
 		SetFailState("[Tournament] This plugin is for CSGO only.");
@@ -63,13 +65,11 @@ public void OnPluginStart(){
 	LoadTranslations("st-tournament.phrases");
 }
 
-public void OnMapStart(){
+public void OnMapStart()
+{
 	SetDefaults();
 
 	createCMDS();
-
-	//reset timers
-	DeleteTimers();
 
 	//TIMER TO REGISTER IF BOTH PLAYERS ARE READY
 	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
@@ -91,16 +91,15 @@ public Action CheckPlayersReady(Handle timer, any data)
 
 public Action CountDown(Handle timer, any data)
 {
-	if(g_CountDownDuration == 0){
-		if(Stopwatch_Timer == INVALID_HANDLE && DisplayHUD_Timer == INVALID_HANDLE){
+	if(g_CountDownDuration == 0){				
+		if(Stopwatch_Timer == null){
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsValidClient(i) && IsPlayerAlive(i) && !IsFakeClient(i)){
-					//CPrintToChat(i, "%t", "GLHF", g_szChatPrefix);
+					//CPrintToChat(i, "%t", "GLHF");
 					SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
 					//ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
 				}
 
-			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_REPEAT);
 			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_REPEAT);
 
 			CountDown_Timer = null;
@@ -126,8 +125,8 @@ public Action CountDown(Handle timer, any data)
 public Action Match_StopWatch(Handle timer, any data)
 {
 	g_RoundDuration = g_RoundDuration - 0.1;
-	
-	if(g_RoundDuration <= 0.0 && MapFinished_Timer == INVALID_HANDLE){
+
+	if(g_RoundDuration <= 0.0 && MapFinished_Timer == null){
 		MapFinished_Timer = CreateTimer(0.1, MapFinished_Check, _, TIMER_REPEAT);
 	}
 
@@ -138,66 +137,91 @@ public Action MapFinished_Check(Handle timer, any data)
 {
 	//PLAYER 1 STILL IN RUN
 	if(surftimer_GetCurrentTime(g_iPlayers_Index[0]) > 0.0 && !g_bPlayer_FinalRun[0]){
-
 		g_bPlayer_FinalRun[0] = true;
-
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsValidClient(i) && !IsFakeClient(i))
-				CPrintToChat(i, "%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[0])
+		CPrintToChatAll("%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[0])
 	}
 	else if(surftimer_GetCurrentTime(g_iPlayers_Index[0]) <= 0.0){
 		g_bPlayer_Finished[0] = true;
+		CPrintToChatAll("%t", "Player_Finished", g_szChatPrefix, g_sPlayer_Name[0])
 	}
 	
 	//PLAYER 2 STILL IN RUN
 	if(surftimer_GetCurrentTime(g_iPlayers_Index[1]) > 0.0 && !g_bPlayer_FinalRun[1]){
-
 		g_bPlayer_FinalRun[1] = true;
-
-		for(int i = 1; i <= MaxClients; i++)
-			if(IsValidClient(i) && !IsFakeClient(i))
-				CPrintToChat(i, "%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[1])
+		CPrintToChatAll("%t", "Player_inRun", g_szChatPrefix, g_sPlayer_Name[1])
 	}
 	else if(surftimer_GetCurrentTime(g_iPlayers_Index[1]) <= 0.0){
 		g_bPlayer_Finished[1] = true;
+		CPrintToChatAll("%t", "Player_Finished", g_szChatPrefix, g_sPlayer_Name[1])
 	}
 
 	if(g_bPlayer_Finished[0] && g_bPlayer_Finished[1]){
 		g_bMatchFinished = true;
 
-		CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
+		CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
 
 		DeleteTimers();
+
+		SetDefaults();
+
+		MapFinished_Timer = null;
+		return Plugin_Stop;
 	}
 
 	return Plugin_Continue;
 }
 
-public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total){
+public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], float PBDiff, float WRDiff, int rank, int total, int style){
 
 	if(!g_bMatchFinished){
 		if(client == g_iPlayers_Index[0] && !g_bPlayer_Finished[0]){
+			for(int i = 0; i < 42; i++)
+                g_fPlayers_BestRun_CheckpointTimes[0][i] = g_fPlayers_CurrentRun_CheckpointTimes[0][i];
+
 			g_fPlayers_BestRun[0] = fRunTime;
 
 			char szPlayer1_Best_Runtime[32];
 			FormatTimeFloat(client, g_fPlayers_BestRun[0], szPlayer1_Best_Runtime, sizeof(szPlayer1_Best_Runtime));
 
-			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[0], szPlayer1_Best_Runtime);
+			float runtime_difference;
+			char szRuntime_Difference[32];
+			runtime_difference = fRunTime - g_fPlayers_BestRun[1];
+			FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+			
+			if (runtime_difference < 0.0)
+				Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
+			else
+				Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
 
-			if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1])
-				CPrintToChatAll("%s is now in the lead!", g_sPlayer_Name[0]);
-
+			if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1])
+				CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szPlayer1_Best_Runtime, szRuntime_Difference);
+			else
+				CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[0], szPlayer1_Best_Runtime, szRuntime_Difference);
 		}
 		else if(client == g_iPlayers_Index[1] && !g_bPlayer_Finished[1]){
+			for(int i = 0; i < 42; i++)
+                g_fPlayers_BestRun_CheckpointTimes[1][i] = g_fPlayers_CurrentRun_CheckpointTimes[1][i];
+
 			g_fPlayers_BestRun[1] = fRunTime;
 
 			char szPlayer2_Best_Runtime[32];
 			FormatTimeFloat(client, g_fPlayers_BestRun[1], szPlayer2_Best_Runtime, sizeof(szPlayer2_Best_Runtime));
 
-			CPrintToChatAll("%s finished a run in : %s", g_sPlayer_Name[1], szPlayer2_Best_Runtime);
+			float runtime_difference;
+			char szRuntime_Difference[32];
+			runtime_difference = fRunTime - g_fPlayers_BestRun[0];
+			FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+			
+			if (runtime_difference < 0.0)
+				Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
+			else
+				Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
 
-			if(g_fPlayers_BestRun[1] > g_fPlayers_BestRun[0])
-				CPrintToChatAll("%s is now in the lead!", g_sPlayer_Name[1]);
+			if(g_fPlayers_BestRun[1] < g_fPlayers_BestRun[0])
+				CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szPlayer2_Best_Runtime, szRuntime_Difference);
+			else
+				CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[1], szPlayer2_Best_Runtime, szRuntime_Difference);
+		
 		}
 	}
 
@@ -206,4 +230,5 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 
 public void OnMapEnd(){
 	DeleteTimers();
+	delete MapFinished_Timer;
 }

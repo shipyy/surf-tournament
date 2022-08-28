@@ -1,5 +1,10 @@
 public void FormatTimeFloat(int client, float time, char[] string, int length)
 {
+	if (time <= 0.0) {
+		Format(string, length, "00:00.000");
+		return;
+	}
+
 	char szDays[16];
 	char szHours[16];
 	char szMinutes[16];
@@ -76,14 +81,12 @@ public void DeleteTimers()
 {	
 	delete PlayersReady_Timer;
 	delete CountDown_Timer;
-	delete DisplayHUD_Timer;
 	delete Timeleft_Timer;
 	delete Stopwatch_Timer;
-	delete MapFinished_Timer;
 }
 
-public void SetDefaults(){
-
+public void SetDefaults()
+{
 	g_iPlayers_Index[0] = -1;
 	g_iPlayers_Index[1] = -1;
 
@@ -108,4 +111,14 @@ public void SetDefaults(){
 	g_bPlayer_Finished[1] = false;
 
 	g_bMatchFinished = false;
+
+	g_iCurrentCP[0] = 0;
+	g_iCurrentCP[1] = 0;
+
+	for (int i = 0; i < 42; i++) {
+		g_fPlayers_BestRun_CheckpointTimes[0][1] = 0.0;
+		g_fPlayers_BestRun_CheckpointTimes[1][1] = 0.0;
+	}
+
+	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
 }
