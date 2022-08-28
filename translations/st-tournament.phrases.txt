@@ -42,11 +42,11 @@
 	"Run_Finished_Faster"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({green}{3}{default})!"
+		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({3}: {green}{4}{default})!"
 	}
 	"Run_Finished_Slower"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({red}{3}{default})!"
+		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({3}: {red}{4}{default})!"
 	}
 }
