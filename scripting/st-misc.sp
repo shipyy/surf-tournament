@@ -116,8 +116,8 @@ public void SetDefaults()
 	g_iCurrentCP[1] = 0;
 
 	for (int i = 0; i < 42; i++) {
-		g_fPlayers_BestRun_CheckpointTimes[0][1] = 0.0;
-		g_fPlayers_BestRun_CheckpointTimes[1][1] = 0.0;
+		g_fPlayers_BestRun_CheckpointTimes[0][i] = 0.0;
+		g_fPlayers_BestRun_CheckpointTimes[1][i] = 0.0;
 	}
 
 	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
