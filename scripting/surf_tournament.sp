@@ -7,7 +7,9 @@ public Plugin myinfo =
 	url = "https://github.com/shipyy/surf-tournament"
 };
 
-/* ----- VARIABLES ----- */
+//////
+//VARIABLES
+/////
 int g_iPlayers_Index[2];
 char g_sPlayers_SteamID[2][32];
 char g_sPlayer_Name[2][MAX_NAME_LENGTH];
@@ -35,7 +37,9 @@ Handle Timeleft_Timer = null;
 Handle MapFinished_Timer = null;
 Handle Stopwatch_Timer = null;
 
-/* ----- INCLUDES ----- */
+/////
+//INCLUDES
+/////
 #include <surftimer>
 #include <colorlib>
 #include <autoexecconfig>
@@ -75,6 +79,12 @@ public void OnMapStart()
 	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
 }
 
+public void OnMapEnd()
+{
+	DeleteTimers();
+	delete MapFinished_Timer;
+}
+
 public Action CheckPlayersReady(Handle timer, any data)
 {
 	if (g_bPlayersReady && CountDown_Timer == INVALID_HANDLE){
@@ -95,9 +105,7 @@ public Action CountDown(Handle timer, any data)
 		if(Stopwatch_Timer == null){
 			for(int i = 1; i <= MaxClients; i++)
 				if(IsValidClient(i) && IsPlayerAlive(i) && !IsFakeClient(i)){
-					//CPrintToChat(i, "%t", "GLHF");
 					SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-					//ShowHudText(i, -1, "%s", "-----  MATCH STARTED GL -----");
 				}
 
 			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_REPEAT);
@@ -109,7 +117,6 @@ public Action CountDown(Handle timer, any data)
 	else if(g_CountDownDuration <= g_cvarCountDownDuration.IntValue){
 		for(int i = 1; i <= MaxClients; i++)
         	if(IsValidClient(i) && !IsFakeClient(i)){
-				//CPrintToChat(i, "%t", "CountDown", g_CountDownDuration);
 				SetHudTextParams(-1.0, -1.0, 1.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
 				ShowHudText(i, -1, "----- %d -----", g_CountDownDuration);
 			}
@@ -238,9 +245,4 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 	}
 
 	return Plugin_Handled;
-}
-
-public void OnMapEnd(){
-	DeleteTimers();
-	delete MapFinished_Timer;
 }

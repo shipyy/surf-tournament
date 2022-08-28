@@ -6,21 +6,21 @@ public void DisplayHUD()
         if (IsValidClient(i) && (i == g_iPlayers_Index[0] || i == g_iPlayers_Index[1])) {
             if(!g_bMatchFinished){
                 char szFormattedTime[32];
-                if (g_RoundDuration < 0.0) {
-                        FormatTimeFloat(i, g_RoundDuration * -1.0, szFormattedTime, sizeof(szFormattedTime));
-                        Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
+                if (g_RoundDuration <= 0.0) {
+                    FormatTimeFloat(i, g_RoundDuration * -1.0, szFormattedTime, sizeof(szFormattedTime));
+                    Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
-                        //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s", szFormattedTime);
-                    }
-                    else {
-                        FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
+                    //SHOW MATCH TIME LEFT
+                    SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                    ShowHudText(i, -1, "%s", szFormattedTime);
+                }
+                else {
+                    FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
-                        //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s", szFormattedTime);
-                    }
+                    //SHOW MATCH TIME LEFT
+                    SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                    ShowHudText(i, -1, "%s", szFormattedTime);
+                }
             }
         }
 
