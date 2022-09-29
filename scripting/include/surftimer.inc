@@ -109,6 +109,28 @@ native void surftimer_GetPlayerNameColored(int client, char[] str);
 native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
 
 /**
+ * Retrieves the current map's bonus WR holder and the associated time.
+ *
+ * @param client				The client's ID.
+ * @param szWRname				String to store the Bonus WR holder's name.
+ * @param WRtime				float to store the Bonus WR holder's time.
+ * @param pbtime				float to store the Bonus PB holder's time.
+ * @return						The number of players who have finished the current bonus.
+ */
+native int surftimer_GetBonusData(int client, char[] szWRname, float& WRtime, float& PBtime);
+
+/**
+ * Retrieves the current map's stage  WR holder and the associated time.
+ *
+ * @param client				The client's ID.
+ * @param szWRname				String to store the stage WR holder's name.
+ * @param WRtime				float to store the stage WR holder's time.
+ * @param pbtime				float to store the stage PB holder's time.
+ * @return						The number of players who have finished the current stage.
+ */
+native int surftimer_GetStageData(int client, char[] szWRname, float& WRtime, float& PBtime);
+
+/**
  * Retrieves the client's data.
  *
  * @param client			The client's ID.
@@ -116,7 +138,7 @@ native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
  * @param rank				int to store the client's map rank.
  * @param country			String to store the client's country.
  */
-native void surftimer_GetPlayerData(int& client, float& time, int& rank, char[] country);
+native void surftimer_GetPlayerData(int& client, int zonegroup, float& time, int& rank, char[] country);
 
 /**
  * Retrieves the client's current info.

@@ -41,12 +41,17 @@
 	}
 	"Run_Finished_Faster"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({3}: {green}{4}{default})!"
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
+		"en"		"{yellow}{1}{default} | Finished a run in {lightblue}{2}{default}({3}: {green}{4}{default})! \n{yellow}{5}{default} best run : {lightblue}{6}"
 	}
 	"Run_Finished_Slower"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"{yellow}{1}{default} | {lightblue}{2}{default} Finished a run in {yellow}{3}{default}({3}: {red}{4}{default})!"
+		"#format"	"{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
+		"en"		"{yellow}{1}{default} | Finished a run in {lightblue}{2}{default}({3}: {red}{4}{default})! \n{yellow}{5}{default} best run : {lightblue}{6}"
+	}
+	"Overtime2"
+	{
+		"#format"	"{1:s}"
+		"en"		"{yellow}{1}{default} | {red}No players finished a run. First to Finish Wins!!!{default}"
 	}
 }

@@ -71,18 +71,18 @@ public void FormatTimeFloat(int client, float time, char[] string, int length)
 }
 
 stock bool IsValidClient(int client)
-{   
+{
     if (client >= 1 && client <= MaxClients && IsClientInGame(client))
         return true;
     return false;
 }
 
 public void DeleteTimers()
-{	
+{
 	delete PlayersReady_Timer;
 	delete CountDown_Timer;
 	delete Timeleft_Timer;
-	delete Stopwatch_Timer;
+	delete DisplayHUD_Timer;
 }
 
 public void SetDefaults()
@@ -104,12 +104,16 @@ public void SetDefaults()
 
 	g_bPlayersReady = false;
 
+	g_bIsOnRun[0] = false;
+	g_bIsOnRun[1] = false;
+
 	g_bPlayer_FinalRun[0] = false;
 	g_bPlayer_FinalRun[1] = false;
-	
+
 	g_bPlayer_Finished[0] = false;
 	g_bPlayer_Finished[1] = false;
 
+	g_bMatchStarted = false;
 	g_bMatchFinished = false;
 
 	g_iCurrentCP[0] = 0;
@@ -119,6 +123,9 @@ public void SetDefaults()
 		g_fPlayers_BestRun_CheckpointTimes[0][i] = 0.0;
 		g_fPlayers_BestRun_CheckpointTimes[1][i] = 0.0;
 	}
+
+	g_bPrinted[0] = false;
+	g_bPrinted[1] = false;
 
 	PlayersReady_Timer = CreateTimer(1.0, CheckPlayersReady, _, TIMER_REPEAT);
 }
