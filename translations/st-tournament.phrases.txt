@@ -52,6 +52,6 @@
 	"Overtime2"
 	{
 		"#format"	"{1:s}"
-		"en"		"{yellow}{1}{default} | {red}No players finished a run. First to Finish Wins!!!{default}"
+		"en"		"{yellow}{1}{default} | {lightblue}No players finished a run. First to Finish Wins!!!{default}"
 	}
 }

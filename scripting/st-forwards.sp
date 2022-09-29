@@ -21,7 +21,13 @@ public Action surftimer_OnMapStart(int client, int prestrafe, int pre_PBDiff, in
 public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], float PBDiff, float WRDiff, int rank, int total, int style)
 {
     if(g_bMatchStarted && !g_bMatchFinished && style == 0){
-        if(client == g_iPlayers_Index[0] && !g_bPlayer_Finished[0]){
+        PrintToConsole(0, "value of g_bPlayer_Finished %b | %b", g_bPlayer_Finished[0], g_bPlayer_Finished[1]);
+        if(client == g_iPlayers_Index[0] && (!g_bPlayer_Finished[0] || g_bPlayer_FinalRun[0])){
+
+            if (g_bPlayer_FinalRun[0])
+                g_bPlayer_Finished[0] = true;
+
+            PrintToChatAll("PLAYER 1 FINISHED A RUN");
             for(int i = 0; i < 42; i++)
                 g_fPlayers_BestRun_CheckpointTimes[0][i] = g_fPlayers_CurrentRun_CheckpointTimes[0][i];
 
@@ -59,7 +65,11 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
                 CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "P2", "N/A", g_sPlayer_Name[0], szPlayer1_Best_Runtime);
             }
         }
-        else if(client == g_iPlayers_Index[1] && !g_bPlayer_Finished[1]){
+        else if(client == g_iPlayers_Index[1] && (!g_bPlayer_Finished[1] || g_bPlayer_FinalRun[1])){
+            if (g_bPlayer_FinalRun[1])
+                g_bPlayer_Finished[1] = true;
+
+            PrintToChatAll("PLAYER 2 FINISHED A RUN");
             for(int i = 0; i < 42; i++)
                 g_fPlayers_BestRun_CheckpointTimes[1][i] = g_fPlayers_CurrentRun_CheckpointTimes[1][i];
 
