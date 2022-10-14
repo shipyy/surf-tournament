@@ -14,14 +14,14 @@ public Action DisplayHUD(Handle timer, any data)
                     Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
                     //SHOW MATCH TIME LEFT
-                    SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                    SetHudTextParams(-1.0, 0.15, 0.15, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
                     ShowHudText(i, -1, "%s", szFormattedTime);
                 }
                 else {
                     FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
                     //SHOW MATCH TIME LEFT
-                    SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                    SetHudTextParams(-1.0, 0.15, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                     ShowHudText(i, -1, "%s", szFormattedTime);
                 }
             }
@@ -51,14 +51,14 @@ public Action DisplayHUD(Handle timer, any data)
                         Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
                         //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.15, 0.15, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szFormattedTime);
                     }
                     else {
                         FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
                         //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.1, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.15, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szFormattedTime);
                     }
 
@@ -91,7 +91,7 @@ public Action DisplayHUD(Handle timer, any data)
                         temp_difference_1 = g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1];
                         Player1_Difference = temp_difference_1 < 0 ? temp_difference_1 * -1.0 : temp_difference_1;
 
-                        temp_difference_2 = g_fPlayers_BestRun[1] - g_fPlayers_BestRun[0];
+                        temp_difference_2 = g_fPlayers_BestRun[0] - g_fPlayers_BestRun[1];
                         Player2_Difference = temp_difference_2 < 0 ? temp_difference_2 * -1.0 : temp_difference_2;
 
                         if (g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]) {
@@ -151,13 +151,12 @@ public Action DisplayHUD(Handle timer, any data)
                         else {
                             Format(szPlayer1_RunDifference, sizeof szPlayer1_RunDifference, "(%s)", szPlayer1_RunDifference);
                         }
-
                     }
                     else {
                         Format(szPlayer1_RunDifference, sizeof szPlayer1_RunDifference, "(N/A)", szPlayer1_RunDifference);
                     }
 
-                     //FORMAT DIFFERENCE STRING FOR PLAYER 2
+                    //FORMAT DIFFERENCE STRING FOR PLAYER 2
                     if (Player2_Difference != 999999.0) {
                         FormatTimeFloat(i, Player2_Difference, szPlayer2_RunDifference, sizeof(szPlayer2_RunDifference));
 
@@ -170,7 +169,6 @@ public Action DisplayHUD(Handle timer, any data)
                         else {
                             Format(szPlayer2_RunDifference, sizeof szPlayer2_RunDifference, "(%s)", szPlayer2_RunDifference);
                         }
-
                     }
                     else {
                         Format(szPlayer2_RunDifference, sizeof szPlayer2_RunDifference, "(N/A)", szPlayer2_RunDifference);
@@ -190,20 +188,20 @@ public Action DisplayHUD(Handle timer, any data)
                     //IF SPECCING PLAYER 1 FOCUS ON THE PLAYER 1 STATS
                     if (ObservedUser == g_iPlayers_Index[0]) {
                         //PLAYER 1 INFO
-                        SetHudTextParams(-1.0, 0.25, 0.1, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.70, 0.2, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer1_final);
 
                         //PLAYER 2 INFO
-                        SetHudTextParams(0.0, -1.0, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.25, 0.2, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer2_final);
                     }
                     else if (ObservedUser == g_iPlayers_Index[1]) {
                         //PLAYER 2 INFO
-                        SetHudTextParams(-1.0, 0.25, 0.1, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.70, 0.2, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer2_final);
 
                         //PLAYER 1 INFO
-                        SetHudTextParams(0.0, -1.0, 0.1, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.25, 0.2, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer1_final);
                     }
                 }

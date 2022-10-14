@@ -112,7 +112,7 @@ public Action Match_StopWatch(Handle timer, any data)
 				if (Overtime1 == null && Overtime2 == null) {
 					SetHudTextParams(-1.0, 0.65, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
 					for(int i = 1; i <= MaxClients; i++)
-						if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && client != g_iPlayers_Index[0] && client != g_iPlayers_Index[1])
+						if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && i != g_iPlayers_Index[0] && i != g_iPlayers_Index[1])
             				ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
 					CPrintToChatAll("%t", "Overtime2", g_szChatPrefix);
 					Overtime2 = CreateTimer(0.1, Overtime2_Timer, _, TIMER_REPEAT);
@@ -196,7 +196,7 @@ public Action Overtime1_Timer(Handle timer, any data)
 			if (Overtime1 == null && Overtime2 == null) {
 				SetHudTextParams(-1.0, 0.65, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
 				for(int i = 1; i <= MaxClients; i++)
-					if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && client != g_iPlayers_Index[0] && client != g_iPlayers_Index[1])
+					if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && i != g_iPlayers_Index[0] && i != g_iPlayers_Index[1])
             			ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
 				CPrintToChatAll("%t", "Overtime2", g_szChatPrefix);
 				Overtime2 = CreateTimer(0.1, Overtime2_Timer, _, TIMER_REPEAT);

@@ -21,15 +21,30 @@ public Action surftimer_OnMapStart(int client, int prestrafe, int pre_PBDiff, in
 public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], float PBDiff, float WRDiff, int rank, int total, int style)
 {
     if(g_bMatchStarted && !g_bMatchFinished && style == 0){
-        PrintToConsole(0, "value of g_bPlayer_Finished %b | %b", g_bPlayer_Finished[0], g_bPlayer_Finished[1]);
         if(client == g_iPlayers_Index[0] && (!g_bPlayer_Finished[0] || g_bPlayer_FinalRun[0])){
 
             if (g_bPlayer_FinalRun[0])
                 g_bPlayer_Finished[0] = true;
 
-            PrintToChatAll("PLAYER 1 FINISHED A RUN");
             for(int i = 0; i < 42; i++)
                 g_fPlayers_BestRun_CheckpointTimes[0][i] = g_fPlayers_CurrentRun_CheckpointTimes[0][i];
+
+            //OWN PLAYER DIFFERENCE
+            char szRuntime_Difference[32];
+            if (g_fPlayers_BestRun[0] != 0.0){
+                float runtime_difference = fRunTime - g_fPlayers_BestRun[0];
+                if (runtime_difference < 0.0)
+                    FormatTimeFloat(client, runtime_difference * -1.0, szRuntime_Difference, sizeof(szRuntime_Difference));
+                else
+                    FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+
+                if (runtime_difference < 0.0)
+                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
+                else
+                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
+            }
+            else
+                Format(szRuntime_Difference, sizeof szRuntime_Difference, "N/A", szRuntime_Difference);
 
             if (fRunTime < g_fPlayers_BestRun[0] || g_fPlayers_BestRun[0] == 0.0)
                 g_fPlayers_BestRun[0] = fRunTime;
@@ -43,9 +58,46 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
 
             if (g_fPlayers_BestRun[1] != 0.0) {
 
-                float runtime_difference;
-                char szRuntime_Difference[32];
-                runtime_difference = fRunTime - g_fPlayers_BestRun[1];
+                float runtime_difference_opponent;
+                char szRuntime_Difference_opponent[32];
+                runtime_difference_opponent = fRunTime - g_fPlayers_BestRun[1];
+
+                //OPPONENT DIFFERENCE
+                if (runtime_difference_opponent < 0.0)
+                    FormatTimeFloat(client, runtime_difference_opponent * -1.0, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
+                else
+                    FormatTimeFloat(client, runtime_difference_opponent, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
+
+                if (runtime_difference_opponent < 0.0)
+                    Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "-%s", szRuntime_Difference_opponent);
+                else
+                    Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "+%s", szRuntime_Difference_opponent);
+
+                //PRINT TO CHAT
+                if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1])
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "PB", szRuntime_Difference, "P2", szRuntime_Difference_opponent, szPlayer1_Best_Runtime);
+                else
+                    CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[0], szRuntimeFormatted, "PB", szRuntime_Difference, "P2", szRuntime_Difference_opponent, szPlayer1_Best_Runtime);
+            }
+            else {
+                if (g_fPlayers_BestRun[1] != 0.0)
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "PB", szRuntime_Difference, "P2", "N/A", szPlayer1_Best_Runtime);
+                else
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "PB", szRuntime_Difference, "P2", "N/A", szPlayer1_Best_Runtime);
+            }
+        }
+        //PLAYER 2
+        else if(client == g_iPlayers_Index[1] && (!g_bPlayer_Finished[1] || g_bPlayer_FinalRun[1])){
+            if (g_bPlayer_FinalRun[1])
+                g_bPlayer_Finished[1] = true;
+
+            for(int i = 0; i < 42; i++)
+                g_fPlayers_BestRun_CheckpointTimes[1][i] = g_fPlayers_CurrentRun_CheckpointTimes[1][i];
+
+            //OWN PLAYER DIFFERENCE
+            char szRuntime_Difference[32];
+            if (g_fPlayers_BestRun[1] != 0.0){
+                float runtime_difference = fRunTime - g_fPlayers_BestRun[1];
                 if (runtime_difference < 0.0)
                     FormatTimeFloat(client, runtime_difference * -1.0, szRuntime_Difference, sizeof(szRuntime_Difference));
                 else
@@ -55,23 +107,9 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
                     Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
                 else
                     Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
-
-                if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1])
-                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "P2", szRuntime_Difference, g_sPlayer_Name[0], szPlayer1_Best_Runtime);
-                else
-                    CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[0], szRuntimeFormatted, "P2", szRuntime_Difference, g_sPlayer_Name[0], szPlayer1_Best_Runtime);
             }
-            else {
-                CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[0], szRuntimeFormatted, "P2", "N/A", g_sPlayer_Name[0], szPlayer1_Best_Runtime);
-            }
-        }
-        else if(client == g_iPlayers_Index[1] && (!g_bPlayer_Finished[1] || g_bPlayer_FinalRun[1])){
-            if (g_bPlayer_FinalRun[1])
-                g_bPlayer_Finished[1] = true;
-
-            PrintToChatAll("PLAYER 2 FINISHED A RUN");
-            for(int i = 0; i < 42; i++)
-                g_fPlayers_BestRun_CheckpointTimes[1][i] = g_fPlayers_CurrentRun_CheckpointTimes[1][i];
+            else
+                Format(szRuntime_Difference, sizeof szRuntime_Difference, "N/A", szRuntime_Difference);
 
             if (fRunTime < g_fPlayers_BestRun[1] || g_fPlayers_BestRun[1] == 0.0)
                 g_fPlayers_BestRun[1] = fRunTime;
@@ -84,29 +122,32 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
             FormatTimeFloat(client, fRunTime, szRuntimeFormatted, sizeof(szRuntimeFormatted));
 
             if (g_fPlayers_BestRun[0] != 0.0 ) {
+                float runtime_difference_opponent;
+                char szRuntime_Difference_opponent[32];
+                runtime_difference_opponent = fRunTime - g_fPlayers_BestRun[0];
 
-                float runtime_difference;
-                char szRuntime_Difference[32];
-                runtime_difference = fRunTime - g_fPlayers_BestRun[0];
-                if (runtime_difference < 0.0)
-                    FormatTimeFloat(client, runtime_difference * -1.0, szRuntime_Difference, sizeof(szRuntime_Difference));
+                //OPPONENT DIFFERENCE
+                if (runtime_difference_opponent < 0.0)
+                    FormatTimeFloat(client, runtime_difference_opponent * -1.0, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
                 else
-                    FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
+                    FormatTimeFloat(client, runtime_difference_opponent, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
 
-                if (runtime_difference < 0.0)
-                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
+                if (runtime_difference_opponent < 0.0)
+                    Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "-%s", szRuntime_Difference_opponent);
                 else
-                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
+                    Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "+%s", szRuntime_Difference_opponent);
 
                 if(g_fPlayers_BestRun[1] < g_fPlayers_BestRun[0])
-                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szRuntimeFormatted, "P1", szRuntime_Difference, g_sPlayer_Name[1], szPlayer2_Best_Runtime);
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szRuntimeFormatted, "PB", szRuntime_Difference, "P1", szRuntime_Difference_opponent, szPlayer2_Best_Runtime);
                 else
-                    CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[1], szRuntimeFormatted, "P1", szRuntime_Difference, g_sPlayer_Name[1], szPlayer2_Best_Runtime);
+                    CPrintToChatAll("%t", "Run_Finished_Slower", g_sPlayer_Name[1], szRuntimeFormatted, "PB", szRuntime_Difference, "P1", szRuntime_Difference_opponent, szPlayer2_Best_Runtime);
             }
             else {
-                CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szRuntimeFormatted, "P1", "N/A", g_sPlayer_Name[1], szPlayer2_Best_Runtime);
+                if (g_fPlayers_BestRun[0] != 0.0)
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szRuntimeFormatted, "PB", szRuntime_Difference, "P1", "N/A", szPlayer2_Best_Runtime);
+                else
+                    CPrintToChatAll("%t", "Run_Finished_Faster", g_sPlayer_Name[1], szRuntimeFormatted, "PB", szRuntime_Difference, "P1", "N/A", szPlayer2_Best_Runtime);
             }
-
         }
     }
 
@@ -125,8 +166,8 @@ public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[5
             if (client == g_iPlayers_Index[0]) {
                 g_fPlayers_CurrentRun_CheckpointTimes[0][g_iCurrentCP[0]] = fRunTime;
 
-                if (g_fPlayers_CurrentRun_CheckpointTimes[1][g_iCurrentCP[0]] != 0.0) {
-                    CPDifference = fRunTime - g_fPlayers_CurrentRun_CheckpointTimes[1][g_iCurrentCP[0]];
+                if (g_fPlayers_BestRun_CheckpointTimes[1][g_iCurrentCP[0]] != 0.0) {
+                    CPDifference = fRunTime - g_fPlayers_BestRun_CheckpointTimes[1][g_iCurrentCP[0]];
                     FormatTimeFloat(client, CPDifference, szCPDifference, sizeof szCPDifference);
 
                     //FASTER
@@ -149,8 +190,8 @@ public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[5
             else if (client == g_iPlayers_Index[1]){
                 g_fPlayers_CurrentRun_CheckpointTimes[1][g_iCurrentCP[1]] = fRunTime;
 
-                if (g_fPlayers_CurrentRun_CheckpointTimes[0][g_iCurrentCP[1]] != 0.0) {
-                    CPDifference = fRunTime - g_fPlayers_CurrentRun_CheckpointTimes[0][g_iCurrentCP[1]];
+                if (g_fPlayers_BestRun_CheckpointTimes[0][g_iCurrentCP[1]] != 0.0) {
+                    CPDifference = fRunTime - g_fPlayers_BestRun_CheckpointTimes[0][g_iCurrentCP[1]];
                     FormatTimeFloat(client, CPDifference, szCPDifference, sizeof szCPDifference);
 
                     //FASTER
@@ -178,7 +219,7 @@ public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[5
             else if (CPDifference > 0)
                 displayColor = {255,0,0};
             else
-                displayColor = {0,0,255};
+                displayColor = {255,255,255};
 
             //DISPLAY HUD FOR SPECTATORS
             for (int i = 1; i <= MaxClients; i++)
