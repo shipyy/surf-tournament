@@ -160,6 +160,13 @@ native void surftimer_GetPlayerInfo(int& client, int& iWrcpTimer, int& iPracMode
 native float surftimer_GetClientSync(int client);
 
 /**
+ * teleport player to start zone
+ *
+ * @param client			The client's ID.
+ */
+native int surftimer_RestartTimer(int client);
+
+/**
  * Retrieves the client's current style.
  *
  * @param client			The client's ID.
@@ -224,7 +231,7 @@ forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTi
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnPracticeFinished(int client, float fRunTime, char sRunTime[54]);
+forward Action surftimer_OnPracticeFinished(int client, float fRunTime, float fPBDifference, float fWRDifference, int bonusid);
 
 /**
  * Called when a client sets a new record

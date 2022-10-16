@@ -1,8 +1,5 @@
 public Action DisplayHUD(Handle timer, any data)
 {
-
-    //g_RoundDuration--;
-
     for(int i = 1; i <= MaxClients; i++)
     {
         //HUD FOR CONTESTANTS
@@ -14,15 +11,28 @@ public Action DisplayHUD(Handle timer, any data)
                     Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
                     //SHOW MATCH TIME LEFT
-                    SetHudTextParams(-1.0, 0.15, 0.15, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                    SetHudTextParams(-1.0, 0.1, 0.15, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                    ShowHudText(i, -1, "%s", szFormattedTime);
                     ShowHudText(i, -1, "%s", szFormattedTime);
                 }
                 else {
                     FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
                     //SHOW MATCH TIME LEFT
-                    SetHudTextParams(-1.0, 0.15, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                    SetHudTextParams(-1.0, 0.1, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                     ShowHudText(i, -1, "%s", szFormattedTime);
+                }
+            }
+            else {
+                if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1]){
+                    SetHudTextParams(-1.0, -1.0, 3.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                    ShowHudText(g_iPlayers_Index[0], -1, "%s\n%s", g_sPlayer_Name[0], "WON THE MATCH");
+                    ShowHudText(g_iPlayers_Index[1], -1, "%s\n%s", g_sPlayer_Name[0], "WON THE MATCH");
+                }
+                else {
+                    SetHudTextParams(-1.0, -1.0, 3.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                    ShowHudText(g_iPlayers_Index[0], -1, "%s\n%s", g_sPlayer_Name[1], "WON THE MATCH");
+                    ShowHudText(g_iPlayers_Index[1], -1, "%s\n%s", g_sPlayer_Name[1], "WON THE MATCH");
                 }
             }
         }
@@ -32,16 +42,17 @@ public Action DisplayHUD(Handle timer, any data)
 
             int ObservedUser = GetEntPropEnt(i, Prop_Send, "m_hObserverTarget");
 
-            if (!IsFakeClient(ObservedUser))
+            if (ObservedUser == g_iPlayers_Index[0] || ObservedUser == g_iPlayers_Index[1])
             {
                 if (g_bMatchFinished) {
-                    if(g_fPlayers_BestRun[0] > g_fPlayers_BestRun[1]){
-                        SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s %s", g_sPlayer_Name[0], "WON THE MATCH");
+
+                    if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1]){
+                        SetHudTextParams(-1.0, -1.0, 3.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        ShowHudText(i, -1, "%s\n%s", g_sPlayer_Name[0], "WON THE MATCH");
                     }
                     else {
-                        SetHudTextParams(-1.0, -1.0, 5.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
-                        ShowHudText(i, -1, "%s %s", g_sPlayer_Name[1], "WON THE MATCH");
+                        SetHudTextParams(-1.0, -1.0, 3.0, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        ShowHudText(i, -1, "%s\n%s", g_sPlayer_Name[1], "WON THE MATCH");
                     }
                 }
                 else {
@@ -51,14 +62,14 @@ public Action DisplayHUD(Handle timer, any data)
                         Format(szFormattedTime, sizeof(szFormattedTime), "%s - %s", "Overtime", szFormattedTime);
 
                         //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.15, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.15, 0.1, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szFormattedTime);
                     }
                     else {
                         FormatTimeFloat(i, g_RoundDuration, szFormattedTime, sizeof(szFormattedTime));
 
                         //SHOW MATCH TIME LEFT
-                        SetHudTextParams(-1.0, 0.15, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.1, 0.15, 0, 255, 0, 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szFormattedTime);
                     }
 
@@ -111,14 +122,14 @@ public Action DisplayHUD(Handle timer, any data)
                         temp_difference_1 = 999999.0;
                         Player1_Difference = 999999.0;
 
-                        temp_difference_2 = -g_fPlayers_BestRun[0];
+                        temp_difference_2 = g_fPlayers_BestRun[0];
                         Player2_Difference = temp_difference_2 < 0 ? temp_difference_2 * -1.0 : temp_difference_2;
 
                         displayColor[0] = {0,255,0};
                         displayColor[1] = {255,0,0};
                     }
                     else if (g_fPlayers_BestRun[0] == 0.0 &&  g_fPlayers_BestRun[1] != 0.0) {
-                        temp_difference_1 = -g_fPlayers_BestRun[1];
+                        temp_difference_1 = g_fPlayers_BestRun[1];
                         Player1_Difference = temp_difference_1 < 0 ? temp_difference_1 * -1.0 : temp_difference_1;
 
                         temp_difference_2 = 999999.0;
@@ -140,7 +151,7 @@ public Action DisplayHUD(Handle timer, any data)
 
                     //FORMAT DIFFERENCE STRING FOR PLAYER 1
                     if (Player1_Difference != 999999.0) {
-                        FormatTimeFloat(i, Player1_Difference, szPlayer1_RunDifference, sizeof(szPlayer1_RunDifference));
+                        FormatTimeFloat(i, Player1_Difference, szPlayer1_RunDifference, sizeof(szPlayer1_RunDifference));   
 
                         if (temp_difference_1 > 0) {
                             Format(szPlayer1_RunDifference, sizeof szPlayer1_RunDifference, "(+ %s)", szPlayer1_RunDifference);
@@ -188,24 +199,36 @@ public Action DisplayHUD(Handle timer, any data)
                     //IF SPECCING PLAYER 1 FOCUS ON THE PLAYER 1 STATS
                     if (ObservedUser == g_iPlayers_Index[0]) {
                         //PLAYER 1 INFO
-                        SetHudTextParams(-1.0, 0.70, 0.2, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.70, 0.15, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer1_final);
 
                         //PLAYER 2 INFO
-                        SetHudTextParams(-1.0, 0.25, 0.2, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.25, 0.15, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer2_final);
                     }
                     else if (ObservedUser == g_iPlayers_Index[1]) {
                         //PLAYER 2 INFO
-                        SetHudTextParams(-1.0, 0.70, 0.2, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.70, 0.15, displayColor[1][0], displayColor[1][1], displayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer2_final);
 
                         //PLAYER 1 INFO
-                        SetHudTextParams(-1.0, 0.25, 0.2, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
+                        SetHudTextParams(-1.0, 0.25, 0.15, displayColor[0][0], displayColor[0][1], displayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
                         ShowHudText(i, -1, "%s", szPlayer1_final);
                     }
                 }
             }
+        }
+
+        if (g_bMatchFinished) {
+            DisplayHUD_Timer = null;
+
+            DeleteTimers();
+
+            SetDefaults();
+
+            Convars_Get();
+
+            return Plugin_Stop;
         }
     }
 

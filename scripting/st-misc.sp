@@ -83,6 +83,7 @@ public void DeleteTimers()
 	delete CountDown_Timer;
 	delete Timeleft_Timer;
 	delete DisplayHUD_Timer;
+	delete Stopwatch_Timer;
 }
 
 public void SetDefaults()
@@ -123,6 +124,13 @@ public void SetDefaults()
 		g_fPlayers_BestRun_CheckpointTimes[0][i] = 0.0;
 		g_fPlayers_BestRun_CheckpointTimes[1][i] = 0.0;
 	}
+
+	g_szCPDifference[0] = "";
+	g_szCPDifference[1] = "";
+	g_CPDifference[0] = 0.0;
+	g_CPDifference[1] = 0.0;
+	g_CPdisplayColor[0] = {255,255,255};
+	g_CPdisplayColor[1] = {255,255,255};
 
 	g_bPrinted[0] = false;
 	g_bPrinted[1] = false;

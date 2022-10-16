@@ -63,15 +63,14 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
                 runtime_difference_opponent = fRunTime - g_fPlayers_BestRun[1];
 
                 //OPPONENT DIFFERENCE
-                if (runtime_difference_opponent < 0.0)
+                if (runtime_difference_opponent < 0.0) {
                     FormatTimeFloat(client, runtime_difference_opponent * -1.0, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
-                else
-                    FormatTimeFloat(client, runtime_difference_opponent, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
-
-                if (runtime_difference_opponent < 0.0)
                     Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "-%s", szRuntime_Difference_opponent);
-                else
+                }
+                else {
+                    FormatTimeFloat(client, runtime_difference_opponent, szRuntime_Difference_opponent, sizeof(szRuntime_Difference_opponent));
                     Format(szRuntime_Difference_opponent, sizeof szRuntime_Difference_opponent, "+%s", szRuntime_Difference_opponent);
+                }
 
                 //PRINT TO CHAT
                 if(g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1])
@@ -98,15 +97,14 @@ public Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[
             char szRuntime_Difference[32];
             if (g_fPlayers_BestRun[1] != 0.0){
                 float runtime_difference = fRunTime - g_fPlayers_BestRun[1];
-                if (runtime_difference < 0.0)
+                if (runtime_difference < 0.0) {
                     FormatTimeFloat(client, runtime_difference * -1.0, szRuntime_Difference, sizeof(szRuntime_Difference));
-                else
+                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "{green}-%s{default}", szRuntime_Difference);
+                }
+                else {
                     FormatTimeFloat(client, runtime_difference, szRuntime_Difference, sizeof(szRuntime_Difference));
-
-                if (runtime_difference < 0.0)
-                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "-%s", szRuntime_Difference);
-                else
-                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "+%s", szRuntime_Difference);
+                    Format(szRuntime_Difference, sizeof szRuntime_Difference, "{red}+%s{default}", szRuntime_Difference);
+                }
             }
             else
                 Format(szRuntime_Difference, sizeof szRuntime_Difference, "N/A", szRuntime_Difference);
@@ -158,87 +156,100 @@ public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[5
 {
     if (IsValidClient(client) && g_bMatchStarted) {
         if (client == g_iPlayers_Index[0] || client == g_iPlayers_Index[1]) {
-
-            char szCPDifference[32];
-            float CPDifference;
-
             //PLAYER 1
             if (client == g_iPlayers_Index[0]) {
+                g_fLastDifferenceTime[0] = GetGameTime();
+
                 g_fPlayers_CurrentRun_CheckpointTimes[0][g_iCurrentCP[0]] = fRunTime;
 
                 if (g_fPlayers_BestRun_CheckpointTimes[1][g_iCurrentCP[0]] != 0.0) {
-                    CPDifference = fRunTime - g_fPlayers_BestRun_CheckpointTimes[1][g_iCurrentCP[0]];
-                    FormatTimeFloat(client, CPDifference, szCPDifference, sizeof szCPDifference);
+                    g_CPDifference[0] = fRunTime - g_fPlayers_BestRun_CheckpointTimes[1][g_iCurrentCP[0]];
+                    FormatTimeFloat(client, g_CPDifference[0], g_szCPDifference[0], sizeof g_szCPDifference[]);
 
                     //FASTER
-                    if (CPDifference < 0)
-                        Format(szCPDifference, sizeof szCPDifference, "-%s", szCPDifference);
+                    if (g_CPDifference[0] < 0)
+                        Format(g_szCPDifference[0], sizeof g_szCPDifference[], "-%s", g_szCPDifference[0]);
                     //SLOWER
-                    else if (CPDifference > 0)
-                        Format(szCPDifference, sizeof szCPDifference, "+%s", szCPDifference);
+                    else if (g_CPDifference[1] > 0)
+                        Format(g_szCPDifference[0], sizeof g_szCPDifference[], "+%s", g_szCPDifference[0]);
                     else
-                        Format(szCPDifference, sizeof szCPDifference, "%s", szCPDifference);
+                        Format(g_szCPDifference[0], sizeof g_szCPDifference[], "%s", g_szCPDifference[0]);
                 }
                 else {
-                    Format(szCPDifference, sizeof szCPDifference, "N/A");
+                    Format(g_szCPDifference[0], sizeof g_szCPDifference[], "N/A");
                 }
 
                 //INCREMENT CP COUNT
                 g_iCurrentCP[0]++;
+
+                //FASTER
+                if (g_CPDifference[0] < 0)
+                    g_CPdisplayColor[0] = {0,255,0};
+                //SLOWER
+                else if (g_CPDifference[0] > 0)
+                    g_CPdisplayColor[0] = {255,0,0};
+                else
+                    g_CPdisplayColor[0] = {255,255,255};
             }
             //PLAYER 2
             else if (client == g_iPlayers_Index[1]){
+                g_fLastDifferenceTime[1] = GetGameTime();
+
                 g_fPlayers_CurrentRun_CheckpointTimes[1][g_iCurrentCP[1]] = fRunTime;
 
                 if (g_fPlayers_BestRun_CheckpointTimes[0][g_iCurrentCP[1]] != 0.0) {
-                    CPDifference = fRunTime - g_fPlayers_BestRun_CheckpointTimes[0][g_iCurrentCP[1]];
-                    FormatTimeFloat(client, CPDifference, szCPDifference, sizeof szCPDifference);
+                    g_CPDifference[1] = fRunTime - g_fPlayers_BestRun_CheckpointTimes[0][g_iCurrentCP[1]];
+                    FormatTimeFloat(client, g_CPDifference[1], g_szCPDifference[1], sizeof g_szCPDifference[]);
 
                     //FASTER
-                    if (CPDifference < 0)
-                        Format(szCPDifference, sizeof szCPDifference, "-%s", szCPDifference);
+                    if (g_CPDifference[1] < 0)
+                        Format(g_szCPDifference[1], sizeof g_szCPDifference[], "-%s", g_szCPDifference[1]);
                     //SLOWER
-                    else if (CPDifference > 0)
-                        Format(szCPDifference, sizeof szCPDifference, "+%s", szCPDifference);
+                    else if (g_CPDifference[1] > 0)
+                        Format(g_szCPDifference[1], sizeof g_szCPDifference[], "+%s", g_szCPDifference[1]);
                     else
-                        Format(szCPDifference, sizeof szCPDifference, "%s", szCPDifference);
+                        Format(g_szCPDifference[1], sizeof g_szCPDifference[], "%s", g_szCPDifference[1]);
                 }
                 else {
-                    Format(szCPDifference, sizeof szCPDifference, "N/A");
+                    Format(g_szCPDifference[1], sizeof g_szCPDifference[], "N/A");
                 }
 
                 //INCREMENT CP COUNT
                 g_iCurrentCP[1]++;
-            }
 
-            int displayColor[3];
-            //FASTER
-            if (CPDifference < 0)
-                displayColor = {0,255,0};
-            //SLOWER
-            else if (CPDifference > 0)
-                displayColor = {255,0,0};
-            else
-                displayColor = {255,255,255};
-
-            //DISPLAY HUD FOR SPECTATORS
-            for (int i = 1; i <= MaxClients; i++)
-            {
-                if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i)) {
-
-                    int ObservedUser = GetEntPropEnt(i, Prop_Send, "m_hObserverTarget");
-
-                    //IF CLIENT IS SPECCING A CONTESTANT
-                    if (ObservedUser == client) {
-                        if (!g_bMatchFinished) {
-                            SetHudTextParams(-1.0, 0.60, 3.0, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-                            ShowHudText(i, -1, "%s", szCPDifference);
-                        }
-                    }
-                }
+                //FASTER
+                if (g_CPDifference[1] < 0)
+                    g_CPdisplayColor[1] = {0,255,0};
+                //SLOWER
+                else if (g_CPDifference[1] > 0)
+                    g_CPdisplayColor[1] = {255,0,0};
+                else
+                    g_CPdisplayColor[1] = {255,255,255};
             }
         }
     }
 
     return Plugin_Continue;
+}
+
+public void Checkpoints_Display()
+{
+    //DISPLAY HUD FOR SPECTATORS
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i)) {
+
+            int ObservedUser = GetEntPropEnt(i, Prop_Send, "m_hObserverTarget");
+
+            //IF CLIENT IS SPECCING A CONTESTANT
+            if (ObservedUser == g_iPlayers_Index[0] && GetGameTime() - g_fLastDifferenceTime[0] < 3.0) {
+                SetHudTextParams(-1.0, -1.0, 0.15, g_CPdisplayColor[0][0], g_CPdisplayColor[0][1], g_CPdisplayColor[0][2], 255, 0, 0.0, 0.0, 0.0);
+                ShowHudText(i, -1, g_szCPDifference[0]);
+            }
+            else if (ObservedUser == g_iPlayers_Index[1] && GetGameTime() - g_fLastDifferenceTime[1] < 3.0) {
+                SetHudTextParams(-1.0, -1.0, 0.15, g_CPdisplayColor[1][0], g_CPdisplayColor[1][1], g_CPdisplayColor[1][2], 255, 0, 0.0, 0.0, 0.0);
+                ShowHudText(i, -1, g_szCPDifference[1]);
+            }
+        }
+    }
 }

@@ -7,6 +7,10 @@ char g_sPlayer_Name[2][MAX_NAME_LENGTH];
 float g_fPlayers_BestRun[2];
 float g_fPlayers_BestRun_CheckpointTimes[2][42];
 float g_fPlayers_CurrentRun_CheckpointTimes[2][42];
+float g_fLastDifferenceTime[2];
+char g_szCPDifference[2][32];
+float g_CPDifference[2];
+int g_CPdisplayColor[2][3];
 int	g_iCurrentCP[2];
 bool g_bPlayers_Ready_Check[2];
 bool g_bPlayersReady;
@@ -31,4 +35,4 @@ Handle Overtime2 = null;
 Handle Stopwatch_Timer = null;
 Handle DisplayHUD_Timer = null;
 
-//Handle HUD_SYNC = null;
+float g_iOvertimeMessageTime;

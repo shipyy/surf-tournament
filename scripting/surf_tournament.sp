@@ -31,6 +31,9 @@ public void OnPluginStart()
 	createCMDS();
 
 	ConVars_Create();
+
+	CreateTimer(0.1, CheckpointsTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, ShowOvertimeMessage, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public void OnConfigsExecuted()
@@ -52,6 +55,7 @@ public void OnMapEnd()
 	delete Overtime1;
 	delete Overtime2;
 	delete Stopwatch_Timer;
+	delete DisplayHUD_Timer;
 }
 
 public Action CheckPlayersReady(Handle timer, any data)
@@ -74,6 +78,7 @@ public Action CountDown(Handle timer, any data)
 		g_bMatchFinished = false;
 
 		if(Stopwatch_Timer == null){
+			//g_StartTime = GetGameTime();
 			Stopwatch_Timer = CreateTimer(0.1, Match_StopWatch, _, TIMER_REPEAT);
 			DisplayHUD_Timer = CreateTimer(0.1, DisplayHUD, _, TIMER_REPEAT);
 
@@ -98,6 +103,7 @@ public Action CountDown(Handle timer, any data)
 
 public Action Match_StopWatch(Handle timer, any data)
 {
+	//g_RoundDuration = g_StartTime = GetGameTime();
 	g_RoundDuration = g_RoundDuration - 0.1;
 
 	if(g_RoundDuration <= 0.0){
@@ -110,23 +116,23 @@ public Action Match_StopWatch(Handle timer, any data)
 			//COMPLETION OVERTIME
 			if (g_fPlayers_BestRun[0] == 0.0 && g_fPlayers_BestRun[1] == 0.0){
 				if (Overtime1 == null && Overtime2 == null) {
-					SetHudTextParams(-1.0, 0.65, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+					/*
+					SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
 					for(int i = 1; i <= MaxClients; i++)
-						if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && i != g_iPlayers_Index[0] && i != g_iPlayers_Index[1])
+						if (IsValidClient(i) && !IsFakeClient(i))
             				ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
+					*/
 					CPrintToChatAll("%t", "Overtime2", g_szChatPrefix);
+					surftimer_RestartTimer(g_iPlayers_Index[0]);
+					surftimer_RestartTimer(g_iPlayers_Index[1]);
+					g_iOvertimeMessageTime = GetGameTime();
 					Overtime2 = CreateTimer(0.1, Overtime2_Timer, _, TIMER_REPEAT);
 				}
 			}
 			//AT ELAST 1 PLAYER FINISHED A RUN BEFORE OVERTIME
 			else {
+
 				g_bMatchFinished = true;
-
-				DeleteTimers();
-
-				SetDefaults();
-
-				Convars_Get();
 
 				if (g_fPlayers_BestRun[0] != 0.0 || g_fPlayers_BestRun[1] != 0.0) {
 					if (g_fPlayers_BestRun[0] == 0.0)
@@ -137,6 +143,14 @@ public Action Match_StopWatch(Handle timer, any data)
 				else if (g_fPlayers_BestRun[0] != 0.0 && g_fPlayers_BestRun[1] != 0.0) {
 					CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
 				}
+
+				/*
+				DeleteTimers();
+
+				SetDefaults();
+
+				Convars_Get();
+				*/
 			}
 		}
 		//LAST RUN OVERTIME
@@ -194,11 +208,16 @@ public Action Overtime1_Timer(Handle timer, any data)
 			g_bPlayer_Finished[1] = false;
 
 			if (Overtime1 == null && Overtime2 == null) {
-				SetHudTextParams(-1.0, 0.65, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
+				/*
+				SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255, 0, 0.0, 0.0, 0.0);
 				for(int i = 1; i <= MaxClients; i++)
-					if (IsValidClient(i) && IsClientObserver(i) && !IsFakeClient(i) && i != g_iPlayers_Index[0] && i != g_iPlayers_Index[1])
-            			ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
+					if (IsValidClient(i) && !IsFakeClient(i))
+						ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
+				*/
 				CPrintToChatAll("%t", "Overtime2", g_szChatPrefix);
+				surftimer_RestartTimer(g_iPlayers_Index[0]);
+				surftimer_RestartTimer(g_iPlayers_Index[1]);
+				g_iOvertimeMessageTime = GetGameTime();
 				Overtime2 = CreateTimer(0.1, Overtime2_Timer, _, TIMER_REPEAT);
 			}
 
@@ -217,12 +236,14 @@ public Action Overtime1_Timer(Handle timer, any data)
 			CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] < g_fPlayers_BestRun[1] ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
 		}
 
+		/*
 		DeleteTimers();
 		delete Stopwatch_Timer;
 
 		SetDefaults();
 
 		Convars_Get();
+		*/
 
 		Overtime1 = null;
 		return Plugin_Stop;
@@ -244,15 +265,37 @@ public Action Overtime2_Timer(Handle timer, any data)
 
 		CPrintToChatAll("%t", "Winner", g_szChatPrefix, g_fPlayers_BestRun[0] != 0.0 ? g_sPlayer_Name[0] : g_sPlayer_Name[1]);
 
+		/*
 		DeleteTimers();
 		delete Stopwatch_Timer;
 
 		SetDefaults();
 
 		Convars_Get();
+		*/
 
 		Overtime2 = null;
 		return Plugin_Stop;
+	}
+
+	return Plugin_Continue;
+}
+
+public Action CheckpointsTimer(Handle timer, any data)
+{
+	if (g_bMatchStarted && !g_bMatchFinished)
+		Checkpoints_Display();
+
+	return Plugin_Continue;
+}
+
+public Action ShowOvertimeMessage(Handle timer, any data)
+{
+	if (GetGameTime() - g_iOvertimeMessageTime < 3.0) {
+		SetHudTextParams(-1.0, 0.35, 0.15, 255, 255, 0, 255, 0, 0.0, 0.0, 0.0);
+		for(int i = 1; i <= MaxClients; i++)
+			if (IsValidClient(i) && !IsFakeClient(i))
+				ShowHudText(i, -1, "%s", "Overtime\nFirst Player To Complete Wins!!!");
 	}
 
 	return Plugin_Continue;
