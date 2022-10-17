@@ -19,7 +19,6 @@ void ConVars_Create()
 
 public void Convars_Get()
 {
-    //CHAT PREFIX
     g_CountDownDuration = GetConVarInt(g_cvarCountDownDuration);
     g_RoundDuration = GetConVarInt(g_cvarRoundDuration) * 60 * 1.0;
 }
